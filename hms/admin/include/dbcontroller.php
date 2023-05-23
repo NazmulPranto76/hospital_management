@@ -2,7 +2,7 @@
 $DB_host = "192.168.20.228";
 $DB_user = "root";
 $DB_pass = "hms1234";
-$DB_name = "ingram";
+$DB_name = "hms";
 try
 {
  $DB_con = new PDO("mysql:host={$DB_host};dbname={$DB_name}",$DB_user,$DB_pass);
