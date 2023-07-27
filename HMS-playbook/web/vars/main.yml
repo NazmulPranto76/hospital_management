@@ -1,0 +1,12 @@
+---
+httpd_port: 80
+mysql_port: 3306
+repository: https://github.com/nazmul-islam76/hospital_management.git
+
+packages_web:
+  - libselinux-python
+  - libsemanage-python
+  - httpd
+  - git
+  - php
+  - php-mysql

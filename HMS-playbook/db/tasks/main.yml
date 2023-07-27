@@ -1,0 +1,67 @@
+- name: Installation Services for Mysql
+  yum:
+    name: "{{ packages_sql }}"  
+    state: installed
+  tags: install Mysql
+
+- name: Starting firewalld
+  service: 
+    name: firewalld 
+    state: started 
+    enabled: yes
+  tags: Start firewalld
+
+- name: Inserting firewalld rule for mysql
+  firewalld: 
+    port: "{{ mysql_port }}/tcp"
+    permanent: true 
+    state: enabled 
+    immediate: yes
+  tags: enable mysql port
+
+- name: Restarting firewalld
+  service: 
+    name: firewalld 
+    state: reloaded 
+    enabled: yes
+  tags: restarted firewalld
+
+- name: Copying Mysql configuration file
+  copy: 
+    src: files/my-db.cnf
+    dest: /etc/my-db.cnf
+  tags: mysql conf copy
+
+- name: Starting MariaDB Service
+  service: 
+    name: mariadb 
+    state: started 
+    enabled: yes
+  tags: start mariadb
+
+- name: Creating Application Database
+  mysql_db: 
+    name: "{{ dbname }}" 
+    state: present
+  tags: create database
+
+- name: Creating Application DB User
+  mysql_user: 
+    name: "{{ dbuser }}" 
+    password: "{{ dbpassword }}" 
+    priv: "*.*:ALL" 
+    host: '{{ dbServerIP }}' 
+    state: present
+  no_log: true
+  tags: create user
+
+- name: Moving hms-db-load-script to db host
+  copy:
+    src: files/hms-db-load-script.sql
+    dest: /tmp/hms-db-load-script.sql
+  tags: copy sql
+  
+- name: Loading Inventory Data
+  shell: mysql -f < /tmp/hms-db-load-script.sql
+  tags: run sql
+

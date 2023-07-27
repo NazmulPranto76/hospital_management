@@ -1,0 +1,50 @@
+- name: Installing Web Services
+  yum:
+    name: "{{ packages_web }}"
+    state: installed
+  tags: install web Services
+
+- name: Starting firewalld
+  service: 
+    name: firewalld 
+    state: started 
+    enabled: yes
+  tags: start firewalld
+
+- name: Inserting firewalld rule for httpd
+  firewalld: 
+    port: "{{ httpd_port }}/tcp" 
+    permanent: true 
+    state: enabled 
+    immediate: yes
+  tags: enable httpd port
+
+- name: Inserting firewalld rule for mysql
+  firewalld: 
+    port: "{{ mysql_port }}/tcp" 
+    permanent: true 
+    state: enabled 
+    immediate: yes
+  tags: enable mysql port
+
+- name: Setting index.php as the default page to show
+  replace:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: 'DirectoryIndex index.html'
+    replace: '#DirectoryIndex index.html \nDirectoryIndex index.php'
+  tags: rename html file
+
+- name: Start http service state
+  service: 
+    name: httpd 
+    state: started 
+    enabled: yes
+  tags: httpd start
+
+- name: Copy the project code from repository
+  git: 
+    repo: "{{ repository }}" 
+    dest: /var/www/html/ 
+    force: yes
+  tags: clone
+

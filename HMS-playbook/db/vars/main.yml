@@ -1,0 +1,14 @@
+---
+mysql_port: 3306
+dbname: hms
+dbuser: root
+dbpassword: hms1234
+dbServerIP: 192.168.20.228
+webServerIP: 192.168.20.233
+
+packages_sql:
+  - libselinux-python
+  - libsemanage-python
+  - mariadb-server
+  - MySQL-python
+  - php-mysql 
